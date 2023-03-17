@@ -1,0 +1,11 @@
+%dw 2.0
+
+type auto_0f7a6e2a_9e87_4228_aca8_b8c8999ba5dc_Output_Payload = Array<{  genres: Array<Any>, 
+  stores: Array<Any>, 
+  name: String, 
+  rating: Number, 
+  released: String, 
+  platforms: Array<Any>, 
+  _?: Any
+} {"description": "Schema of a Game object on MongoDB"}>
+

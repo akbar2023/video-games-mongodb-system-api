@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns:mongo="http://www.mulesoft.org/schema/mule/mongo"
+	xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<mongo:config name="MongoDB_Config" doc:name="MongoDB Config" doc:id="7435cb89-5c93-483c-ad5c-5b99ad52b645" >
+		<mongo:connection database="video-games" >
+			<mongo:server-addresses >
+				<mongo:server-address host="localhost" />
+			</mongo:server-addresses>
+		</mongo:connection>
+	</mongo:config>
+	<flow name="post-video-games-to-mongodb" doc:id="0b22bd2b-f0eb-4606-a739-8dc0db5e5eac" >
+		<ee:transform doc:name="Transform Message" doc:id="59df8b41-f02b-4f3e-aeb3-71fab93a7606" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+payload as Array
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<foreach doc:name="For Each" doc:id="0834355c-c92c-46e9-bc76-16eb34d818d7" >
+			<mongo:insert-document doc:name="Insert document" doc:id="cf725cbd-49ec-47e0-a950-66afafdbef8f" config-ref="MongoDB_Config" collectionName="games"/>
+		</foreach>
+		<mongo:count-documents collectionName="games" doc:name="Count documents" doc:id="7cb012a2-b0a3-428d-a3a7-f04701720cd6" config-ref="MongoDB_Config"/>
+		<ee:transform doc:name="Transform Message" doc:id="4ae9a08a-86d2-443c-98c6-fb95e3b24ef9" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/json
+---
+{
+	"Total records": payload	
+}
+]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+	<flow name="search-video-games-from-mongodb-by-filters" doc:id="0f7a6e2a-9e87-4228-aca8-b8c8999ba5dc" >
+		<mongo:find-documents doc:name="Find documents" doc:id="1689c221-d42f-42bf-a27c-7d6a98ab6005" config-ref="MongoDB_Config" collectionName="games" fields=','>
+			<mongo:query ><![CDATA[#[output application/json
+---
+{
+	released: "\$gt": "2018-01-01"
+}]]]></mongo:query>
+		</mongo:find-documents>
+		<ee:transform doc:name="Transform Message" doc:id="f5f2bc04-9def-4d2e-b433-7f24ee820b72">
+			<ee:message>
+				<ee:set-payload><![CDATA[%dw 2.0
+output application/json
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+	</flow>
+</mule>
