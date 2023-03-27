@@ -7,7 +7,7 @@
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>mule-application</packaging>
 
-	<name>video-games-mongodb-system-api</name>
+	<name>sys-mongodb-api-old</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -55,13 +55,6 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 		<dependency>
-			<groupId>fa7b5668-0756-43d7-95ee-1d9008bd8616</groupId>
-			<artifactId>video-games-mongodb-system-api</artifactId>
-			<version>1.0.3</version>
-			<classifier>raml</classifier>
-			<type>zip</type>
-		</dependency>
-		<dependency>
 			<groupId>org.mule.modules</groupId>
 			<artifactId>mule-apikit-module</artifactId>
 			<version>1.6.1</version>
@@ -77,6 +70,13 @@
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongodb-driver-legacy</artifactId>
 			<version>4.0.4</version>
+		</dependency>
+		<dependency>
+			<groupId>fa7b5668-0756-43d7-95ee-1d9008bd8616</groupId>
+			<artifactId>sys-mongodb-api</artifactId>
+			<version>1.0.3</version>
+			<classifier>raml</classifier>
+			<type>zip</type>
 		</dependency>
 	</dependencies>
 

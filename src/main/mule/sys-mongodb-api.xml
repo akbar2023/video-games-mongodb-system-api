@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
-    <http:listener-config name="video-games-mongodb-system-api-httpListenerConfig">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/mule-apikit" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/mule-apikit http://www.mulesoft.org/schema/mule/mule-apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd ">
+    <http:listener-config name="sys-mongodb-api-httpListener">
         <http:listener-connection host="0.0.0.0" port="8082" />
     </http:listener-config>
-    <apikit:config name="video-games-mongodb-system-api-config" api="resource::fa7b5668-0756-43d7-95ee-1d9008bd8616:video-games-mongodb-system-api:1.0.3:raml:zip:video-games-mongodb-system-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
-    <flow name="video-games-mongodb-system-api-main">
-        <http:listener config-ref="video-games-mongodb-system-api-httpListenerConfig" path="/api/*">
+    <apikit:config name="sys-mongodb-api-config" api="sys-mongodb-api.raml" outboundHeadersMapName="outboundHeaders" httpStatusVarName="httpStatus" />
+    <flow name="sys-mongodb-api-main">
+        <http:listener config-ref="sys-mongodb-api-httpListener" path="/api/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:router config-ref="video-games-mongodb-system-api-config" />
+        <apikit:router config-ref="sys-mongodb-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:BAD_REQUEST">
                 <ee:transform>
@@ -96,17 +96,17 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="video-games-mongodb-system-api-console">
-        <http:listener config-ref="video-games-mongodb-system-api-httpListenerConfig" path="/console/*">
+    <flow name="sys-mongodb-api-console">
+        <http:listener config-ref="sys-mongodb-api-httpListener" path="/console/*">
             <http:response statusCode="#[vars.httpStatus default 200]">
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:response>
             <http:error-response statusCode="#[vars.httpStatus default 500]">
-                <http:body>#[payload]</http:body>
-                <http:headers>#[vars.outboundHeaders default {}]</http:headers>
+                <http:body><![CDATA[#[payload]]]></http:body>
+                <http:headers><![CDATA[#[vars.outboundHeaders default {}]]]></http:headers>
             </http:error-response>
         </http:listener>
-        <apikit:console config-ref="video-games-mongodb-system-api-config" />
+        <apikit:console config-ref="sys-mongodb-api-config" />
         <error-handler>
             <on-error-propagate type="APIKIT:NOT_FOUND">
                 <ee:transform>
@@ -123,55 +123,10 @@ output application/json
             </on-error-propagate>
         </error-handler>
     </flow>
-    <flow name="get:\games-ratings:video-games-mongodb-system-api-config">
-        <ee:transform>
-            <ee:message>
-                <ee:set-payload><![CDATA[%dw 2.0
-output application/json
----
-[
-  {
-    name: "myGame",
-    released: "2019-09-01",
-    platforms: [
-      "xbox one", 
-      "playstation"
-    ],
-    genres: [
-      "Racing", 
-      "Adventure"
-    ],
-    stores: [
-      "playstation store", 
-      "xbox store"
-    ],
-    rating: 4.96
-  }, 
-  {
-    name: "Cars",
-    released: "2020-09-01",
-    platforms: [
-      "xbox one", 
-      "playstation"
-    ],
-    genres: [
-      "Racing", 
-      "Adventure"
-    ],
-    stores: [
-      "playstation store", 
-      "xbox store"
-    ],
-    rating: 4.85
-  }
-]]]></ee:set-payload>
-            </ee:message>
-        </ee:transform>
+    <flow name="get:\games:sys-mongodb-api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="e340b7be-4a7b-4575-97f4-ed5cea867874" name="get-video-games-from-mongodb" />
     </flow>
-    <flow name="get:\search-games:video-games-mongodb-system-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="c356308d-0ce5-49a7-a1fc-863cc5a38a4e" name="search-video-games-from-mongodb-by-filters"/>
-    </flow>
-    <flow name="post:\post-games:application\json:video-games-mongodb-system-api-config">
-		<flow-ref doc:name="Flow Reference" doc:id="71de528c-6585-42e1-afea-122ff9d378a8" name="post-video-games-to-mongodb"/>
+    <flow name="post:\games:application\json:sys-mongodb-api-config">
+        <flow-ref doc:name="Flow Reference" doc:id="2d86412b-defd-49ad-a7b2-4299b0b62b47" name="post-video-games-to-mongodb" />
     </flow>
 </mule>
