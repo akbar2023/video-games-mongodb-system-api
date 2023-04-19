@@ -16,17 +16,6 @@ http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/ba
 	</mongo:config>
 	<flow name="post-video-games-to-mongodb" doc:id="0b22bd2b-f0eb-4606-a739-8dc0db5e5eac" >
 		<mongo:insert-document doc:name="Insert document" doc:id="cf725cbd-49ec-47e0-a950-66afafdbef8f" config-ref="MongoDB_Config" collectionName="games" />
-		<ee:transform doc:name="Success message" doc:id="4ae9a08a-86d2-443c-98c6-fb95e3b24ef9" >
-			<ee:message >
-				<ee:set-payload ><![CDATA[%dw 2.0
-output application/json
----
-{
-	"message": "Success!",
-}
-]]></ee:set-payload>
-			</ee:message>
-		</ee:transform>
 	</flow>
 	<flow name="get-video-games-from-mongodb" doc:id="0f7a6e2a-9e87-4228-aca8-b8c8999ba5dc" >
 		<logger level="INFO" doc:name="Query Params" doc:id="804a01cb-7f3a-40fd-a049-7bb7c43b745b" message="#[attributes.queryParams]"/>
@@ -37,10 +26,9 @@ var qp = attributes.queryParams
 
 {
 	(released: "\$gte": qp.released) if(qp.released?),
-	(genres: qp.genres) if(qp.genres?),
-	(stores: qp.stores) if(qp.stores?),
-	(platforms: qp.platforms) if(qp.platforms?),
-	("top_rating.title": if(qp.rating == "best") "exceptional" else "skip") if(qp.rating?)
+	("genres.name": qp.genres) if(qp.genres?),
+	("platforms.platform.name": qp.platforms) if(qp.platforms?),
+	("stores.store.name": qp.stores) if(qp.stores?)
 }]]]></mongo:query>
 		</mongo:find-documents>
 		<ee:transform doc:name="Conevret Payload to JSON" doc:id="f5f2bc04-9def-4d2e-b433-7f24ee820b72">
@@ -51,6 +39,5 @@ output application/json
 payload]]></ee:set-payload>
 			</ee:message>
 		</ee:transform>
-		<logger level="INFO" doc:name="Payload" doc:id="1e09a6f4-c719-475a-8656-471bf6faf3a2" message="#[payload]"/>
 	</flow>
 </mule>

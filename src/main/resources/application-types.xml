@@ -306,13 +306,4 @@ type filteredGames = Array<{|  genres: Array<String>,
       </types:output-event>
     </types:processor-declaration>
   </types:enrichment>
-  <types:enrichment select="#1689c221-d42f-42bf-a27c-7d6a98ab6005">
-    <types:processor-declaration>
-      <types:input-event>
-        <types:message>
-          <types:payload type="filteredGames"/>
-        </types:message>
-      </types:input-event>
-    </types:processor-declaration>
-  </types:enrichment>
 </types:mule>
