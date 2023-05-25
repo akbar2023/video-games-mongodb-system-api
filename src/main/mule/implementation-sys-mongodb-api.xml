@@ -8,11 +8,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 http://www.mulesoft.org/schema/mule/mongo http://www.mulesoft.org/schema/mule/mongo/current/mule-mongo.xsd
 http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
 	<mongo:config name="MongoDB_Config" doc:name="MongoDB Config" doc:id="7435cb89-5c93-483c-ad5c-5b99ad52b645" >
-		<mongo:connection database="video-games" >
-			<mongo:server-addresses >
-				<mongo:server-address host="localhost" />
-			</mongo:server-addresses>
-		</mongo:connection>
+		<mongo:connection-string-connection connectionString="mongodb+srv://akbarkhan:vNhE1Ij7ZbyT2Jg1@cluster0.ww7yfyi.mongodb.net/video-games" />
 	</mongo:config>
 	<flow name="post-video-games-to-mongodb" doc:id="0b22bd2b-f0eb-4606-a739-8dc0db5e5eac" >
 		<mongo:insert-document doc:name="Insert document" doc:id="cf725cbd-49ec-47e0-a950-66afafdbef8f" config-ref="MongoDB_Config" collectionName="games" />
