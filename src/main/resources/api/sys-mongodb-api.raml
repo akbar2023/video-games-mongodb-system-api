@@ -1,0 +1,40 @@
+#%RAML 1.0
+title: sys-mongodb-api
+
+types:
+  Game: !include data-types/games.raml
+
+
+/games:
+  post:
+    description: Post one game each time to mongoDB
+    body:
+      application/json:
+        example: !include examples/game.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example: 
+              { 
+                "message": "Success",
+              }
+
+
+  get:
+    description: get games from mongoDB
+    queryParameters:
+      released?: date-only
+      platforms?: array
+      genres?: array
+      stores?: array
+      rating?: 
+        type: string
+        enum: [BEST, WORST]
+    responses:
+      200:
+        body:
+          application/json:
+            example: !include examples/games.raml
+
+
